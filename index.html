@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Store</title>
+    <style>
+        :root {
+            --primary-bg: #f5f5f5;
+            --primary-text: #333;
+            --card-bg: #ffffff;
+            --nav-bg: rgba(255, 255, 255, 0.95);
+            --btn-bg: #333;
+            --btn-hover: #000;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #1a1a1a;
+            --primary-text: #e6e6e6;
+            --card-bg: #2d2d2d;
+            --nav-bg: rgba(45, 45, 45, 0.95);
+            --btn-bg: #4d4d4d;
+            --btn-hover: #666;
+            --shadow-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.2s ease;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--primary-text);
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--nav-bg);
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px var(--shadow-color);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-scrolled {
+            padding: 1rem 5%;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-text);
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--primary-text);
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .cart-count {
+            background: var(--btn-bg);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .theme-icon {
+            width: 24px;
+            height: 24px;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .sun-icon {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        [data-theme="dark"] .moon-icon {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        [data-theme="dark"] .sun-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .hero {
+            margin-top: 6rem;
+            padding: 4rem 5%;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 5%;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.6s ease forwards;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            color: var(--primary-text);
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 2rem;
+            background: var(--btn-bg);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn:hover:not(.adding) {
+            background: var(--btn-hover);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        .btn span {
+            display: block;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+
+        .btn .default-text {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .btn .adding-text,
+        .btn .added-text {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, 30px);
+            opacity: 0;
+            white-space: nowrap;
+        }
+
+        .btn.adding .default-text {
+            transform: translateY(-30px);
+            opacity: 0;
+        }
+
+        .btn.adding .adding-text {
+            transform: translate(-50%, -50%);
+            opacity: 1;
+        }
+
+        .btn.added .default-text {
+            transform: translateY(-30px);
+            opacity: 0;
+        }
+
+        .btn.added .added-text {
+            transform: translate(-50%, -50%);
+            opacity: 1;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <a href="#" class="logo">MINIMAL</a>
+        <div class="nav-links">
+            <a href="#products">Shop</a>
+            <a href="cart.html" class="cart-link">
+                Cart <span class="cart-count">0</span>
+            </a>
+            <button class="theme-toggle">
+                <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1-8.313-12.454z"/>
+                </svg>
+                <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Essential Designs<br>for Modern Living</h1>
+        <a href="#products" class="btn">Explore Collection</a>
+    </section>
+
+    <section id="products" class="products-grid">
+        <div class="product-card delay-1">
+            <img src="https://source.unsplash.com/random/800x600?chair" alt="Modern Chair" class="product-image">
+            <div class="product-info">
+                <h3 class="product-title">Modern Chair</h3>
+                <p class="product-price">$299</p>
+                <button class="btn">
+                    <span class="default-text">Add to Cart</span>
+                    <span class="adding-text"><span class="spinner"></span>Adding...</span>
+                    <span class="added-text">Added to Cart!</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="product-card delay-2">
+            <img src="https://source.unsplash.com/random/800x601?lamp" alt="Minimal Lamp" class="product-image">
+            <div class="product-info">
+                <h3 class="product-title">Minimal Lamp</h3>
+                <p class="product-price">$159</p>
+                <button class="btn">
+                    <span class="default-text">Add to Cart</span>
+                    <span class="adding-text"><span class="spinner"></span>Adding...</span>
+                    <span class="added-text">Added to Cart!</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="product-card delay-3">
+            <img src="https://source.unsplash.com/random/800x602?table" alt="Simple Table" class="product-image">
+            <div class="product-info">
+                <h3 class="product-title">Simple Table</h3>
+                <p class="product-price">$599</p>
+                <button class="btn">
+                    <span class="default-text">Add to Cart</span>
+                    <span class="adding-text"><span class="spinner"></span>Adding...</span>
+                    <span class="added-text">Added to Cart!</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+
+        function setTheme(theme) {
+            body.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            setTheme(isDark ? 'light' : 'dark');
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            nav.classList.toggle('nav-scrolled', window.scrollY > 50);
+        });
+
+        // Product card animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.product-card').forEach((el) => observer.observe(el));
+
+        // Cart functionality
+        let currentProduct = null;
+        let timeoutId = null;
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            document.querySelectorAll('.cart-count').forEach(span => {
+                span.textContent = cart.length;
+            });
+        }
+
+        // Initialize cart
+        if (!localStorage.getItem('cart')) {
+            localStorage.setItem('cart', JSON.stringify([]));
+        }
+        updateCartCount();
+
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                if (button.classList.contains('adding') || button.classList.contains('added')) return;
+
+                currentProduct = button.closest('.product-card');
+                button.classList.add('adding');
+
+                // Add to cart
+                const product = {
+                    id: currentProduct.querySelector('.product-image').src,
+                    title: currentProduct.querySelector('.product-title').textContent,
+                    price: currentProduct.querySelector('.product-price').textContent,
+                    quantity: 1
+                };
+
+                const cart = JSON.parse(localStorage.getItem('cart'));
+                const existing = cart.find(item => item.id === product.id);
+                
+                if (existing) existing.quantity++;
+                else cart.push(product);
+                
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+
+                setTimeout(() => {
+                    button.classList.remove('adding');
+                    button.classList.add('added');
+                }, 1200);
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelector(anchor.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
