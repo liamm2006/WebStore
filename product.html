@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimal Store</title>
+    <title>Product Details - Minimal Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -58,16 +58,6 @@
             align-items: center;
             box-shadow: 0 2px 15px var(--shadow-color);
             z-index: 1000;
-        }
-
-        .product-card {
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .product-card .btn {
-            z-index: 2;
-            position: relative;
         }
 
         .logo {
@@ -142,83 +132,66 @@
             transform: translate(-50%, -50%) scale(1);
         }
 
-        .hero {
-            margin-top: 6rem;
+        .product-detail {
+            max-width: 1200px;
+            margin: 100px auto;
             padding: 4rem 5%;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeUp 0.6s ease forwards;
-        }
-
-        .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 2rem 5%;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
         }
 
-        .product-card {
-            background: var(--card-bg);
-            border-radius: 10px;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeUp 0.6s ease forwards;
+        .product-gallery {
+            display: grid;
+            gap: 1rem;
         }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px var(--shadow-color);
-        }
-
-        .product-image {
+        .main-image {
             width: 100%;
-            height: 300px;
+            height: 500px;
             object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .product-card:hover .product-image {
-            transform: scale(1.05);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow-color);
         }
 
         .product-info {
-            padding: 1.5rem;
+            padding: 2rem;
         }
 
         .product-title {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
         }
 
         .product-price {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
             color: var(--primary-text);
+            opacity: 0.9;
+        }
+
+        .product-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 3rem;
             opacity: 0.8;
-            font-weight: 500;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
-            padding: 0.8rem 2rem;
+            padding: 1rem 3rem;
             background: var(--btn-bg);
             color: white;
             text-decoration: none;
-            border-radius: 25px;
-            margin-top: 1rem;
+            border-radius: 30px;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
             cursor: pointer;
             border: none;
+            font-size: 1.1rem;
         }
 
         .btn:hover:not(.adding) {
@@ -289,30 +262,31 @@
             to { transform: rotate(360deg); }
         }
 
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
-
         @media (max-width: 768px) {
-            .nav-links {
-                gap: 1rem;
+            .product-detail {
+                grid-template-columns: 1fr;
+                padding: 2rem 5%;
             }
-            
-            .hero h1 {
+
+            .main-image {
+                height: 300px;
+            }
+
+            .product-title {
                 font-size: 2rem;
             }
-            
-            .products-grid {
-                grid-template-columns: 1fr;
+
+            .product-price {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
     <nav id="navbar">
-        <a href="#" class="logo">MINIMAL</a>
+        <a href="index.html" class="logo">MINIMAL</a>
         <div class="nav-links">
-            <a href="#products">Shop</a>
+            <a href="index.html">Shop</a>
             <a href="cart.html" class="cart-link">
                 Cart <span class="cart-count">0</span>
             </a>
@@ -327,51 +301,22 @@
         </div>
     </nav>
 
-    <section class="hero">
-        <h1>Essential Designs<br>for Modern Living</h1>
-        <a href="#products" class="btn">Explore Collection</a>
-    </section>
-
-    <section id="products" class="products-grid">
-        <div class="product-card delay-1" data-product-id="1">
-            <img src="https://source.unsplash.com/random/800x600?chair" alt="Modern Chair" class="product-image">
-            <div class="product-info">
-                <h3 class="product-title">Modern Chair</h3>
-                <p class="product-price">$299</p>
-                <button class="btn">
-                    <span class="default-text">Add to Cart</span>
-                    <span class="adding-text"><span class="spinner"></span>Adding...</span>
-                    <span class="added-text">Added to Cart!</span>
-                </button>
-            </div>
+    <main class="product-detail">
+        <div class="product-gallery">
+            <img id="mainImage" src="" alt="Product Image" class="main-image">
         </div>
-
-        <div class="product-card delay-2">
-            <img src="https://source.unsplash.com/random/800x601?lamp" alt="Minimal Lamp" class="product-image">
-            <div class="product-info">
-                <h3 class="product-title">Minimal Lamp</h3>
-                <p class="product-price">$159</p>
-                <button class="btn">
-                    <span class="default-text">Add to Cart</span>
-                    <span class="adding-text"><span class="spinner"></span>Adding...</span>
-                    <span class="added-text">Added to Cart!</span>
-                </button>
-            </div>
+        
+        <div class="product-info">
+            <h1 class="product-title" id="productTitle"></h1>
+            <p class="product-price" id="productPrice"></p>
+            <p class="product-description" id="productDescription"></p>
+            <button class="btn" id="addToCart">
+                <span class="default-text">Add to Cart</span>
+                <span class="adding-text"><span class="spinner"></span>Adding...</span>
+                <span class="added-text">Added to Cart!</span>
+            </button>
         </div>
-
-        <div class="product-card delay-3">
-            <img src="https://source.unsplash.com/random/800x602?table" alt="Simple Table" class="product-image">
-            <div class="product-info">
-                <h3 class="product-title">Simple Table</h3>
-                <p class="product-price">$599</p>
-                <button class="btn">
-                    <span class="default-text">Add to Cart</span>
-                    <span class="adding-text"><span class="spinner"></span>Adding...</span>
-                    <span class="added-text">Added to Cart!</span>
-                </button>
-            </div>
-        </div>
-    </section>
+    </main>
 
     <script>
         // Theme Toggle
@@ -392,6 +337,41 @@
         const savedTheme = localStorage.getItem('theme') || 'light';
         setTheme(savedTheme);
 
+        // Product Data
+        const products = {
+            1: {
+                title: "Modern Chair",
+                price: "$299",
+                description: "Experience ultimate comfort with our ergonomically designed modern chair. Crafted with premium materials for lasting durability and style. Perfect for both office and home use.",
+                image: "https://source.unsplash.com/random/800x600?chair"
+            },
+            2: {
+                title: "Minimal Lamp",
+                price: "$159",
+                description: "Sleek and functional lighting solution with adjustable brightness settings. Features energy-efficient LED technology and touch controls for modern interiors.",
+                image: "https://source.unsplash.com/random/800x601?lamp"
+            },
+            3: {
+                title: "Simple Table",
+                price: "$599",
+                description: "Minimalist design meets functionality with this solid wood construction table. Features eco-friendly finish and scratch-resistant surface. Available in multiple sizes.",
+                image: "https://source.unsplash.com/random/800x602?table"
+            }
+        };
+
+        // Get product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        const product = products[productId];
+
+        // Update product details
+        if (product) {
+            document.getElementById('productTitle').textContent = product.title;
+            document.getElementById('productPrice').textContent = product.price;
+            document.getElementById('productDescription').textContent = product.description;
+            document.getElementById('mainImage').src = product.image;
+        }
+
         // Cart functionality
         let currentProduct = null;
         let timeoutId = null;
@@ -409,69 +389,31 @@
         }
         updateCartCount();
 
-        document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                if (button.classList.contains('adding') || button.classList.contains('added')) return;
+        document.getElementById('addToCart').addEventListener('click', function(e) {
+            if (this.classList.contains('adding') || this.classList.contains('added')) return;
 
-                currentProduct = button.closest('.product-card');
-                button.classList.add('adding');
+            this.classList.add('adding');
 
-                // Add to cart
-                const product = {
-                    id: currentProduct.querySelector('.product-image').src,
-                    title: currentProduct.querySelector('.product-title').textContent,
-                    price: currentProduct.querySelector('.product-price').textContent,
-                    quantity: 1
-                };
+            const product = {
+                id: document.getElementById('mainImage').src,
+                title: document.getElementById('productTitle').textContent,
+                price: document.getElementById('productPrice').textContent,
+                quantity: 1
+            };
 
-                const cart = JSON.parse(localStorage.getItem('cart'));
-                const existing = cart.find(item => item.id === product.id);
-                
-                if (existing) existing.quantity++;
-                else cart.push(product);
-                
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCartCount();
+            const cart = JSON.parse(localStorage.getItem('cart'));
+            const existing = cart.find(item => item.id === product.id);
+            
+            if (existing) existing.quantity++;
+            else cart.push(product);
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
 
-                setTimeout(() => {
-                    button.classList.remove('adding');
-                    button.classList.add('added');
-                }, 1200);
-            });
-        });
-
-        // Scroll animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = 1;
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.product-card').forEach((el) => observer.observe(el));
-
-
-        // Produktklick-Handler hinzufügen
-        document.querySelectorAll('.product-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                // Verhindere Navigation bei Klick auf Button
-                if (e.target.closest('.btn')) return;
-                
-                const productId = card.dataset.productId;
-                window.location.href = `product.html?id=${productId}`;
-            });
-        });
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', (e) => {
-                e.preventDefault();
-                document.querySelector(anchor.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
+            setTimeout(() => {
+                this.classList.remove('adding');
+                this.classList.add('added');
+            }, 1200);
         });
     </script>
 </body>

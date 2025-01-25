@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart - Minimal Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* Copy all CSS from index.html */
         :root {
             --primary-bg: #f5f5f5;
             --primary-text: #333;
@@ -14,6 +14,8 @@
             --btn-bg: #333;
             --btn-hover: #000;
             --shadow-color: rgba(0, 0, 0, 0.1);
+            --header-font: 'Playfair Display', serif;
+            --body-font: 'Inter', sans-serif;
         }
 
         [data-theme="dark"] {
@@ -30,14 +32,19 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             transition: background-color 0.3s ease, color 0.2s ease;
         }
 
         body {
             background-color: var(--primary-bg);
             color: var(--primary-text);
-            transition: all 0.3s ease;
+            font-family: var(--body-font);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--header-font);
+            font-weight: 700;
         }
 
         nav {
@@ -51,19 +58,13 @@
             align-items: center;
             box-shadow: 0 2px 15px var(--shadow-color);
             z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .nav-scrolled {
-            padding: 1rem 5%;
         }
 
         .logo {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-family: var(--header-font);
             color: var(--primary-text);
             text-decoration: none;
-            letter-spacing: -1px;
         }
 
         .nav-links {
@@ -93,44 +94,44 @@
         }
 
         .theme-toggle {
+            position: relative;
+            width: 40px;
+            height: 40px;
             background: none;
             border: none;
             cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: grid;
-            place-items: center;
-            transition: transform 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            transform: rotate(15deg) scale(1.1);
         }
 
         .theme-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: 24px;
             height: 24px;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .moon-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .sun-icon {
             opacity: 0;
-            transform: scale(0.5);
+            transform: translate(-50%, -50%) scale(0.5);
         }
 
         [data-theme="dark"] .moon-icon {
             opacity: 0;
-            transform: scale(0.5);
+            transform: translate(-50%, -50%) scale(0.5);
         }
 
         [data-theme="dark"] .sun-icon {
             opacity: 1;
-            transform: scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
-        /* Cart Specific Styles */
         .cart-container {
             max-width: 1200px;
             margin: 100px auto 2rem;
@@ -138,7 +139,7 @@
         }
 
         .cart-title {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 2rem;
             opacity: 0;
             transform: translateY(20px);
@@ -182,7 +183,7 @@
         }
 
         .cart-item-title {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             margin-bottom: 0.5rem;
         }
 
@@ -319,19 +320,15 @@
 
     <div class="cart-container">
         <h1 class="cart-title">Your Cart</h1>
-        <div class="cart-items" id="cartItems">
-            <!-- Cart items will be populated dynamically -->
-        </div>
-
+        <div class="cart-items" id="cartItems"></div>
         <div class="cart-total">
             Total: $<span id="cartTotal">0.00</span>
         </div>
-
         <a href="#" class="checkout-btn">Proceed to Checkout</a>
     </div>
 
     <script>
-        // Theme Toggle (same as index.html)
+        // Theme Toggle
         const themeToggle = document.querySelector('.theme-toggle');
         const body = document.body;
 
@@ -349,7 +346,7 @@
         const savedTheme = localStorage.getItem('theme') || 'light';
         setTheme(savedTheme);
 
-        // Cart Functionality
+        // Cart functionality
         function updateCartDisplay() {
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
             const cartItems = document.getElementById('cartItems');
@@ -382,7 +379,7 @@
                 
                 cartItems.appendChild(cartItem);
 
-                // Add event listeners
+                // Event listeners
                 cartItem.querySelector('.minus').addEventListener('click', () => updateQuantity(item, -1));
                 cartItem.querySelector('.plus').addEventListener('click', () => updateQuantity(item, 1));
                 cartItem.querySelector('.remove-btn').addEventListener('click', () => removeItem(item));
@@ -422,13 +419,7 @@
             updateCartDisplay();
         }
 
-        // Navbar scroll effect
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            nav.classList.toggle('nav-scrolled', window.scrollY > 50);
-        });
-
-        // Initialize cart display
+        // Initialize
         updateCartDisplay();
     </script>
 </body>
